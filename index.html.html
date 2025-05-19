@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Packet Sniffer</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #00ff90;
+            font-family: monospace;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #packets {
+            white-space: pre-wrap;
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #00ff90;
+        }
+    </style>
+</head>
+<body>
+    <h1>📡 Packet Sniffer Dashboard</h1>
+    <div id="packets">Loading packets...</div>
+
+    <script>
+        async function fetchPackets() {
+            try {
+                const res = await fetch('/packets');
+                const data = await res.json();
+                document.getElementById('packets').innerText = data.join('\n');
+            } catch (err) {
+                console.error('Error fetching packets:', err);
+                document.getElementById('packets').innerText = 'Failed to load packets.';
+            }
+        }
+
+        fetchPackets(); // initial load
+        setInterval(fetchPackets, 1000); // update every second
+    </script>
+</body>
+</html>

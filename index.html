@@ -2,84 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Live Packet Sniffer</title>
+    <title>Packet Sniffer</title>
     <style>
         body {
-            background-color: #0d0d0d;
+            background-color: #111;
             color: #00ff90;
             font-family: monospace;
             padding: 20px;
         }
         h1 {
             text-align: center;
-            color: #00ff90;
-            margin-bottom: 10px;
-        }
-        #controls {
-            text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         #packets {
-            border: 1px solid #00ff90;
-            border-radius: 10px;
-            background-color: #000;
-            padding: 10px;
-            max-height: 70vh;
-            overflow-y: scroll;
             white-space: pre-wrap;
-        }
-        button {
-            background-color: #00ff90;
-            border: none;
-            color: black;
-            padding: 8px 20px;
-            margin: 5px;
-            font-size: 14px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #00cc70;
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #00ff90;
         }
     </style>
 </head>
 <body>
-
-    <h1>📡 Live Packet Sniffer</h1>
-
-    <div id="controls">
-        <button onclick="togglePause()">⏸ Pause / ▶ Resume</button>
-        <span id="counter">Packets: 0</span>
-    </div>
-
-    <div id="packets">Loading...</div>
+    <h1>📡 Packet Sniffer Dashboard</h1>
+    <div id="packets">Loading packets...</div>
 
     <script>
-        let isPaused = false;
-        let packetCount = 0;
-
         async function fetchPackets() {
-            if (isPaused) return;
             try {
                 const res = await fetch('/packets');
                 const data = await res.json();
-                packetCount = data.length;
-                document.getElementById('counter').innerText = `Packets: ${packetCount}`;
-                const display = document.getElementById('packets');
-                display.innerText = data.join('\n');
-                display.scrollTop = display.scrollHeight; // auto-scroll
+                document.getElementById('packets').innerText = data.join('\n');
             } catch (err) {
-                console.error('Fetch error:', err);
+                console.error('Error fetching packets:', err);
+                document.getElementById('packets').innerText = 'Failed to load packets.';
             }
         }
 
-        function togglePause() {
-            isPaused = !isPaused;
-        }
-
-        setInterval(fetchPackets, 1000);
-        fetchPackets(); // load once initially
+        fetchPackets(); // initial load
+        setInterval(fetchPackets, 1000); // update every second
     </script>
-
 </body>
 </html>
